@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/portto/aptos-go-sdk/models"
@@ -13,7 +14,7 @@ type Transactions interface {
 	GetTransactions(ctx context.Context, start, limit int, opts ...interface{}) ([]TransactionResp, error)
 	SubmitTransaction(ctx context.Context, tx models.UserTransaction, opts ...interface{}) (*TransactionResp, error)
 	SimulateTransaction(ctx context.Context, tx models.UserTransaction, estimateGasUnitPrice, estimateMaxGasAmount bool, opts ...interface{}) ([]TransactionResp, error)
-	GetAccountTransactions(ctx context.Context, address string, start, limit int, opts ...interface{}) ([]TransactionResp, error)
+	GetAccountTransactions(ctx context.Context, address string, start uint64, limit int, opts ...interface{}) ([]TransactionResp, error)
 	GetTransactionByHash(ctx context.Context, txHash string, opts ...interface{}) (*TransactionResp, error)
 	GetTransactionByVersion(ctx context.Context, version uint64, opts ...interface{}) (*TransactionResp, error)
 	EstimateGasPrice(ctx context.Context, opts ...interface{}) (uint64, error)
@@ -100,12 +101,12 @@ func (impl TransactionsImpl) SimulateTransaction(ctx context.Context, tx models.
 	return rspJSON, nil
 }
 
-func (impl TransactionsImpl) GetAccountTransactions(ctx context.Context, address string, start, limit int, opts ...interface{}) ([]TransactionResp, error) {
+func (impl TransactionsImpl) GetAccountTransactions(ctx context.Context, address string, start uint64, limit int, opts ...interface{}) ([]TransactionResp, error) {
 	var rspJSON []TransactionResp
 	err := request(ctx, http.MethodGet,
 		impl.Base.Endpoint()+fmt.Sprintf("/v1/accounts/%s/transactions", address),
 		nil, &rspJSON, map[string]interface{}{
-			"start": start,
+			"start": strconv.FormatUint(start, 10),
 			"limit": limit,
 		}, requestOptions(opts...))
 	if err != nil {
