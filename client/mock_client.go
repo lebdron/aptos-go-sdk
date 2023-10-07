@@ -411,14 +411,14 @@ func (_m *MockAptosClient) GetTransactionByVersion(ctx context.Context, version 
 }
 
 // GetTransactions provides a mock function with given fields: ctx, start, limit, opts
-func (_m *MockAptosClient) GetTransactions(ctx context.Context, start int, limit int, opts ...interface{}) ([]TransactionResp, error) {
+func (_m *MockAptosClient) GetTransactions(ctx context.Context, start uint64, limit int, opts ...interface{}) ([]TransactionResp, error) {
 	var _ca []interface{}
 	_ca = append(_ca, ctx, start, limit)
 	_ca = append(_ca, opts...)
 	ret := _m.Called(_ca...)
 
 	var r0 []TransactionResp
-	if rf, ok := ret.Get(0).(func(context.Context, int, int, ...interface{}) []TransactionResp); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uint64, int, ...interface{}) []TransactionResp); ok {
 		r0 = rf(ctx, start, limit, opts...)
 	} else {
 		if ret.Get(0) != nil {
@@ -427,7 +427,7 @@ func (_m *MockAptosClient) GetTransactions(ctx context.Context, start int, limit
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int, int, ...interface{}) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, uint64, int, ...interface{}) error); ok {
 		r1 = rf(ctx, start, limit, opts...)
 	} else {
 		r1 = ret.Error(1)

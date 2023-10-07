@@ -11,7 +11,7 @@ import (
 )
 
 type Transactions interface {
-	GetTransactions(ctx context.Context, start, limit int, opts ...interface{}) ([]TransactionResp, error)
+	GetTransactions(ctx context.Context, start uint64, limit int, opts ...interface{}) ([]TransactionResp, error)
 	SubmitTransaction(ctx context.Context, tx models.UserTransaction, opts ...interface{}) (*TransactionResp, error)
 	SimulateTransaction(ctx context.Context, tx models.UserTransaction, estimateGasUnitPrice, estimateMaxGasAmount bool, opts ...interface{}) ([]TransactionResp, error)
 	GetAccountTransactions(ctx context.Context, address string, start uint64, limit int, opts ...interface{}) ([]TransactionResp, error)
@@ -58,12 +58,12 @@ type TransactionResp struct {
 	Changes             []models.Change `json:"changes"`
 }
 
-func (impl TransactionsImpl) GetTransactions(ctx context.Context, start, limit int, opts ...interface{}) ([]TransactionResp, error) {
+func (impl TransactionsImpl) GetTransactions(ctx context.Context, start uint64, limit int, opts ...interface{}) ([]TransactionResp, error) {
 	var rspJSON []TransactionResp
 	err := request(ctx, http.MethodGet,
 		impl.Base.Endpoint()+"/v1/transactions",
 		nil, &rspJSON, map[string]interface{}{
-			"start": start,
+			"start": strconv.FormatUint(start, 10),
 			"limit": limit,
 		}, requestOptions(opts...))
 	if err != nil {
